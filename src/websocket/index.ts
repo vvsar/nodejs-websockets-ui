@@ -1,7 +1,7 @@
 import { Player } from "./player";
 import { Room } from "./room";
 import { Request, RegData } from "./types";
-import { findUserByWs, responseHandler } from "./utils";
+import { findUserByWs, responseHandler, updateRoom } from "./utils";
 
 const connections = new Set<Player>;
 const rooms: Room[] = [];
@@ -33,9 +33,7 @@ export const onConnect = (ws: WebSocket) => {
           console.log('Addition of user to room failed.');
         }
         rooms.push(room);
-        break;
-      case 'update_room':
-        //
+        updateRoom(rooms, ws);
         break;
       case 'add_user_to_room':
         //
