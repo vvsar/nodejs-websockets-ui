@@ -45,6 +45,9 @@ export const onConnect = (ws: WebSocket) => {
         if (userToAdd && roomToUpdate) {
           roomToUpdate.addUser(userToAdd);
           updateRoom(rooms, connections);
+          if (roomToUpdate.roomUsers.length === 2) {
+            roomToUpdate.createGame(connections);
+          }
         } else {
           console.log('Addition of user to room failed.');
         }
