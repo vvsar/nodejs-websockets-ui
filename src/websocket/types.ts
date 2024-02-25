@@ -2,7 +2,9 @@ import { Player } from "./player";
 
 export type PlayersSet = Set<Player>;
 
-export type RequestData = {
+
+
+export type RegData = {
   name: string,
   password: string,
 }
@@ -12,3 +14,8 @@ export type Request = {
   data: string,
   id: 0.
 };
+
+export type RoomUser = {
+  name: string,
+  index: string,
+}

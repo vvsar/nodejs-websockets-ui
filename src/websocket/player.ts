@@ -31,7 +31,7 @@ export class Player {
     const players = Array.from(allPlayers.values());
     this.error = players.some((player) => player.name === this.name);
     if (this.error) {
-      this.errorText = `The name ${this.name} is in use already. Please choose anotehr one`;
+      this.errorText = `The name ${this.name} is in use already. Please choose another one`;
     }
   }
 }
