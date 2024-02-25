@@ -11,6 +11,22 @@ export type AddUserData = {
   indexRoom: string,
 }
 
+export type Ship = {
+  position: {
+    x: number,
+    y: number,
+  },
+  direction: boolean,
+  length: number,
+  type: 'small' | 'medium' | 'large' | 'huge',
+}
+
+export type AddShipsData = {
+  gameId: string,
+  ships: Ship[],
+  indexPlayer: string,
+}
+
 export type Request = {
   type: string,
   data: string,
@@ -22,7 +38,7 @@ export type RoomUser = {
   index: string,
 }
 
-export type Winner = {
-  name: string,
-  wins: number,
-}
+// export type Winner = {
+//   name: string,
+//   wins: number,
+// }

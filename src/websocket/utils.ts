@@ -1,5 +1,5 @@
 import { Room } from "./room";
-import { PlayersSet, Winner } from "./types";
+import { PlayersSet } from "./types";
 
 export const responseHandler = (type: string, data: unknown) => {
   const dataString = JSON.stringify(data);
@@ -25,8 +25,11 @@ export const updateRoom = (rooms: Room[], allPlayers: PlayersSet) => {
   });
 }
 
-export const updateWinners = (winners: Winner[], allPlayers: PlayersSet) => {
+export const updateWinners = (allPlayers: PlayersSet) => {
   const players = Array.from(allPlayers.values());
+  const winners = players
+    .filter((player) => player.wins > 0)
+    .map((item) => ({ name: item.name, wins: item.wins}));
   players.forEach((player) => {
     player.ws.send(responseHandler('update_winners', winners));
   });

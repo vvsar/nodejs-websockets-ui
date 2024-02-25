@@ -1,11 +1,10 @@
 import { Player } from "./player";
 import { Room } from "./room";
-import { Request, RegData, AddUserData, Winner } from "./types";
+import { Request, RegData, AddUserData, AddShipsData } from "./types";
 import { findUserByWs, responseHandler, updateRoom, updateWinners } from "./utils";
 
 const connections = new Set<Player>;
 const rooms: Room[] = [];
-const winners: Winner[] = [];
 
 export const onConnect = (ws: WebSocket) => {
   ws.onmessage = (message: { data: string }) => {
@@ -23,7 +22,7 @@ export const onConnect = (ws: WebSocket) => {
         const resData = player.getRegInfo();
         ws.send(responseHandler('reg', resData));
         updateRoom(rooms, connections);
-        updateWinners(winners, connections);
+        updateWinners(connections);
         break;
       case 'create_room':
         const room = new Room();
@@ -33,7 +32,7 @@ export const onConnect = (ws: WebSocket) => {
           room.addUser(user);
           rooms.push(room);
           updateRoom(rooms, connections);
-          updateWinners(winners, connections);
+          updateWinners(connections);
         } else {
           console.log('Addition of user to room failed.');
         }
@@ -52,6 +51,22 @@ export const onConnect = (ws: WebSocket) => {
           console.log('Addition of user to room failed.');
         }
         break;
+      case 'add_ships':
+        const addShipsData: AddShipsData = JSON.parse(reqDataString);
+        const gameRoom = rooms.find((room) => room.roomId === addShipsData.gameId);
+        const userToAddShips = findUserByWs(connections, ws);
+        if (gameRoom && userToAddShips) {
+          gameRoom.addShips(userToAddShips, addShipsData.ships);
+        } else {
+          console.log('User failed to add ships to room.');
+        }
+        break;
+      case 'attack':
+        //
+        break;
+      case 'randomAttack':
+        //
+        break;    
       default:
         console.log('Unknown operation!');
         break;

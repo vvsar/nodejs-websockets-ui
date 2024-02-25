@@ -1,5 +1,6 @@
 import { randomUUID } from "crypto";
 import { PlayersSet } from "./types";
+import { Ship } from "./types";
 
 export class Player {
   name: string;
@@ -8,6 +9,9 @@ export class Player {
   ws: WebSocket;
   error: boolean;
   errorText: string;
+  wins: number;
+  shipsLeft: number;
+  ships?: Ship[];
 
   constructor(name: string, password: string, ws: WebSocket) {
     this.name = name;
@@ -16,6 +20,8 @@ export class Player {
     this.ws = ws;
     this.error = false;
     this.errorText = '';
+    this.wins = 0;
+    this.shipsLeft = 0;
   }
 
   getRegInfo() {
