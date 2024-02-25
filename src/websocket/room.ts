@@ -12,6 +12,10 @@ export class Room {
   }
 
   addUser(user: Player) {
-    this.roomUsers.push({name: user.name, index: user.id});
+    const foundUser = this.roomUsers.find((userInRoom) => user.id === userInRoom.index);
+    if (!foundUser) {
+      this.roomUsers.push({name: user.name, index: user.id});
+      console.log(`User [${user.name}] has been added to room [${this.roomId}].`);
+    }
   }
 }

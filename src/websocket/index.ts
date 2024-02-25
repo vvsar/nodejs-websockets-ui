@@ -1,10 +1,11 @@
 import { Player } from "./player";
 import { Room } from "./room";
-import { Request, RegData } from "./types";
-import { findUserByWs, responseHandler, updateRoom } from "./utils";
+import { Request, RegData, AddUserData, Winner } from "./types";
+import { findUserByWs, responseHandler, updateRoom, updateWinners } from "./utils";
 
 const connections = new Set<Player>;
 const rooms: Room[] = [];
+const winners: Winner[] = [];
 
 export const onConnect = (ws: WebSocket) => {
   ws.onmessage = (message: { data: string }) => {
@@ -12,31 +13,41 @@ export const onConnect = (ws: WebSocket) => {
     const {type: reqType, data: reqDataString} = req;
     switch (reqType) {
       case 'reg':
-        const reqData: RegData = JSON.parse(reqDataString);
-        const player = new Player(reqData.name, reqData.password, ws);
+        const regData: RegData = JSON.parse(reqDataString);
+        const player = new Player(regData.name, regData.password, ws);
         player.checkIfNameInUse(connections);
         if (!player.error) {
           connections.add(player);
-          console.log(`User ${player.name} has been created with id ${player.id}.`);
+          console.log(`User [${player.name}] has been created with id [${player.id}].`);
         }
         const resData = player.getRegInfo();
         ws.send(responseHandler('reg', resData));
+        updateRoom(rooms, connections);
+        updateWinners(winners, connections);
         break;
       case 'create_room':
         const room = new Room();
-        console.log(`Room with id ${room.roomId} has been created.`)
+        console.log(`Room [${room.roomId}] has been created.`)
         const user = findUserByWs(connections, ws);
         if (user) {
           room.addUser(user);
-          console.log(`User ${user.name} has been added to room with id ${room.roomId}.`)
+          rooms.push(room);
+          updateRoom(rooms, connections);
+          updateWinners(winners, connections);
         } else {
           console.log('Addition of user to room failed.');
         }
-        rooms.push(room);
-        updateRoom(rooms, ws);
         break;
       case 'add_user_to_room':
-        //
+        const addUserData: AddUserData = JSON.parse(reqDataString);
+        const userToAdd = findUserByWs(connections, ws);
+        const roomToUpdate = rooms.find((room) => room.roomId === addUserData.indexRoom);
+        if (userToAdd && roomToUpdate) {
+          roomToUpdate.addUser(userToAdd);
+          updateRoom(rooms, connections);
+        } else {
+          console.log('Addition of user to room failed.');
+        }
         break;
       default:
         console.log('Unknown operation!');

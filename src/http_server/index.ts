@@ -20,3 +20,6 @@ export const httpServer = http.createServer(function (req, res) {
 
 const wss = new WebSocketServer({port: 3000});
 wss.on('connection', onConnect);
+wss.on('close', () => {
+  console.log('Websocket server disconnected.')
+})

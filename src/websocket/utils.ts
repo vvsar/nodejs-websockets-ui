@@ -1,5 +1,5 @@
 import { Room } from "./room";
-import { PlayersSet } from "./types";
+import { PlayersSet, Winner } from "./types";
 
 export const responseHandler = (type: string, data: unknown) => {
   const dataString = JSON.stringify(data);
@@ -17,7 +17,17 @@ export const findUserByWs = (allPlayers: PlayersSet, ws: WebSocket) => {
   return user;
 }
 
-export const updateRoom = (rooms: Room[], ws: WebSocket) => {
+export const updateRoom = (rooms: Room[], allPlayers: PlayersSet) => {
   const roomsToUpdate = rooms.filter((room) => room.roomUsers.length === 1);
-  ws.send(responseHandler('update_room', roomsToUpdate));
+  const players = Array.from(allPlayers.values());
+  players.forEach((player) => {
+    player.ws.send(responseHandler('update_room', roomsToUpdate));
+  });
+}
+
+export const updateWinners = (winners: Winner[], allPlayers: PlayersSet) => {
+  const players = Array.from(allPlayers.values());
+  players.forEach((player) => {
+    player.ws.send(responseHandler('update_winners', winners));
+  });
 }
