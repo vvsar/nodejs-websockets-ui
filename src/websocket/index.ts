@@ -1,6 +1,6 @@
 import { Player } from "./player";
 import { Room } from "./room";
-import { Request, RegData, AddUserData, AddShipsData } from "./types";
+import { Request, RegData, AddUserData, AddShipsData, AttackData, RandomAttackData } from "./types";
 import { findUserByWs, responseHandler, updateRoom, updateWinners } from "./utils";
 
 const connections = new Set<Player>;
@@ -62,9 +62,24 @@ export const onConnect = (ws: WebSocket) => {
         }
         break;
       case 'attack':
-        //
+        const attackData: AttackData = JSON.parse(reqDataString);
+        const targetRoom = rooms.find((room) => room.roomId === attackData.gameId);
+        if (targetRoom) {
+          targetRoom.game?.attack(attackData.indexPlayer, attackData.x, attackData.y);
+        } else {
+          console.log('Attack failed.');
+        }
         break;
       case 'randomAttack':
+        const randomAttackData: RandomAttackData = JSON.parse(reqDataString);
+        const randomTargetRoom = rooms.find((room) => room.roomId === randomAttackData.gameId);
+        if (randomTargetRoom) {
+          randomTargetRoom.game?.randomAttack(randomAttackData.indexPlayer);
+        } else {
+          console.log('Random attack failed.');
+        }
+        break;
+      case 'single_play':
         //
         break;    
       default:

@@ -19,11 +19,25 @@ export type Ship = {
   direction: boolean,
   length: number,
   type: 'small' | 'medium' | 'large' | 'huge',
+  hiddenCells?: number,
+  shotCells?: [number, number][],
 }
 
 export type AddShipsData = {
   gameId: string,
   ships: Ship[],
+  indexPlayer: string,
+}
+
+export type AttackData = {
+  gameId: string,
+  x: number,
+  y: number,
+  indexPlayer: string,
+}
+
+export type RandomAttackData = {
+  gameId: string,
   indexPlayer: string,
 }
 
@@ -38,7 +52,13 @@ export type RoomUser = {
   index: string,
 }
 
-// export type Winner = {
-//   name: string,
-//   wins: number,
-// }
+export type Cell = {
+  isEmpty: boolean,
+  revealed: boolean,
+  ship?: Ship,
+}
+
+export type SurroundingCell = {
+  x: number,
+  y: number,
+}

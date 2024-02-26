@@ -38,7 +38,7 @@ export class Room {
       }
     });
     if (numberOfResponses === 2) {
-      this.game = new Game(this.roomId, players, gamers);
+      this.game = new Game(this.roomId, allPlayers, gamers);
       console.log(`Game [${this.roomId}] has been created.`);
     } else {
       console.log('Game was not created.');

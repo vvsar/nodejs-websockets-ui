@@ -1,5 +1,5 @@
 import { randomUUID } from "crypto";
-import { PlayersSet } from "./types";
+import { Cell, PlayersSet } from "./types";
 import { Ship } from "./types";
 
 export class Player {
@@ -12,6 +12,7 @@ export class Player {
   wins: number;
   shipsLeft: number;
   ships?: Ship[];
+  field?: Cell[][];
 
   constructor(name: string, password: string, ws: WebSocket) {
     this.name = name;
